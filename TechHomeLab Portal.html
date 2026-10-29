@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechHomeLab | Guida Tecnica, Fai-da-Te, Smart Home & Pet Tech</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        tech: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .badge-amazon {
+            background: linear-gradient(135deg, #ff9900 0%, #e67a00 100%);
+        }
+        .badge-partner {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-darkbg dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Toast Notification System -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white dark:bg-emerald-600 px-5 py-3.5 rounded-xl shadow-2xl flex items-center space-x-3 border border-slate-700 dark:border-emerald-500">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 dark:text-white text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Reindirizzamento all'offerta in corso...</span>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="filterArticles('all')">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-tech-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-microchip text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-brand-700 to-tech-600 dark:from-white dark:via-brand-400 dark:to-tech-400 bg-clip-text text-transparent">
+                            TechHomeLab
+                        </span>
+                        <span class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
+                            Laboratorio di Test
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Desktop Search -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8">
+                    <div class="relative w-full">
+                        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Cerca guide, prodotti (es. LED, motosega, robot)..." 
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-3">
+                    <button id="themeToggle" onclick="toggleTheme()" class="p-2.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 rounded-xl transition" title="Cambia Tema">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    
+                    <a href="#calculator-section" class="hidden sm:flex items-center space-x-2 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 hover:bg-brand-600 dark:hover:bg-brand-500 dark:hover:text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm">
+                        <i class="fa-solid fa-calculator text-brand-500 dark:text-brand-600"></i>
+                        <span>Calcolatore LED</span>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 text-slate-600 dark:text-slate-300 rounded-xl bg-slate-100 dark:bg-slate-800">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Search & Navigation Bar -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-darkbg px-4 py-4 space-y-3">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" onkeyup="handleSearchMobile()" placeholder="Cerca articoli e prodotti..." 
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-2">
+                <button onclick="filterArticles('all'); toggleMobileMenu();" class="text-left px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-800">Tutti i Contenuti</button>
+                <button onclick="filterArticles('garden'); toggleMobileMenu();" class="text-left px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-800">Fai-da-te & Garden</button>
+                <button onclick="filterArticles('smarthome'); toggleMobileMenu();" class="text-left px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-800">Smart Home</button>
+                <button onclick="filterArticles('pettech'); toggleMobileMenu();" class="text-left px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-slate-800">Casa & Pet Tech</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white pt-16 pb-20 border-b border-slate-800">
+            <div class="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto space-y-6">
+                    <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-flask text-xs"></i>
+                        <span>Test Indipendenti & Recensioni Strumentali</span>
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                        La Guida Tecnica per la Tua <span class="bg-gradient-to-r from-brand-400 to-tech-400 bg-clip-text text-transparent">Casa & Laboratorio</span>
+                    </h1>
+                    <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed">
+                        Analisi rigorose, calcoli dimensionali e test sul campo per fai-da-te, domotica, utensili da giardino e tecnologia per la casa. Senza sponsorizzazioni opache.
+                    </p>
+                    
+                    <!-- Stats Bar -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-800/80 max-w-xl mx-auto">
+                        <div>
+                            <div class="text-2xl font-extrabold text-brand-400">100%</div>
+                            <div class="text-xs text-slate-400">Test In Laboratorio</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-extrabold text-tech-400">3 Macro</div>
+                            <div class="text-xs text-slate-400">Aree Tecniche</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-extrabold text-slate-200">2026</div>
+                            <div class="text-xs text-slate-400">Guide Aggiornate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filter Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-7 relative z-20">
+            <div class="bg-white dark:bg-darkcard rounded-2xl shadow-xl p-3 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-start sm:justify-center space-x-2 overflow-x-auto no-scrollbar">
+                <button onclick="filterArticles('all')" id="btn-all" class="cat-btn active px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 whitespace-nowrap bg-brand-600 text-white shadow-md shadow-brand-600/20">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>Tutte le Categorie</span>
+                </button>
+                <button onclick="filterArticles('garden')" id="btn-garden" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-hammer text-emerald-500"></i>
+                    <span>Fai-da-te & Garden</span>
+                </button>
+                <button onclick="filterArticles('smarthome')" id="btn-smarthome" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-bolt text-tech-500"></i>
+                    <span>Smart Home & Hardware</span>
+                </button>
+                <button onclick="filterArticles('pettech')" id="btn-pettech" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center space-x-2 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i class="fa-solid fa-paw text-amber-500"></i>
+                    <span>Casa & Pet Tech</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Content Area: Articles & Featured Review -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Guide & Test In Evidenza</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Scegli la guida per consultare la scheda tecnica e le offerte verificate.</p>
+                </div>
+                <span id="resultsCount" class="text-xs font-semibold px-3 py-1 bg-slate-200 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-300">
+                    6 Articoli
+                </span>
+            </div>
+
+            <!-- Articles Grid -->
+            <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dynamically Inserted via JS -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="hidden text-center py-16 bg-white dark:bg-darkcard rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                <i class="fa-solid fa-magnifying-glass text-4xl text-slate-400 mb-3"></i>
+                <h3 class="text-lg font-bold">Nessun articolo trovato</h3>
+                <p class="text-slate-500 text-sm mt-1">Prova a cambiare i termini di ricerca o a selezionare un'altra categoria.</p>
+            </div>
+        </section>
+
+        <!-- Interactive LED Driver Power Calculator Tool -->
+        <section id="calculator-section" class="bg-gradient-to-br from-slate-900 to-tech-950 text-white py-16 border-y border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-5 space-y-4">
+                        <span class="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-tech-400 bg-tech-500/10 px-3 py-1 rounded-full border border-tech-500/20">
+                            <i class="fa-solid fa-calculator"></i>
+                            <span>Tool del Laboratorio</span>
+                        </span>
+                        <h2 class="text-3xl font-black tracking-tight sm:text-4xl">
+                            Calcolatore Potenza Alimentatore LED
+                        </h2>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Calcola al volo la potenza (Watt) minima del driver necessario per la tua striscia LED. Applica automaticamente il **margine di sicurezza del +20%** raccomandato per evitare il surriscaldamento del trasformatore.
+                        </p>
+                        <ul class="space-y-2 text-xs text-slate-400">
+                            <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-brand-400"></i><span>Previene cali di tensione e sfarfallio</span></li>
+                            <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-brand-400"></i><span>Calcolo per lunghezze custom fino a 50 metri</span></li>
+                            <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-brand-400"></i><span>Consiglio istantaneo dell'alimentatore ideale</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700/80 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
+                        <form id="ledForm" onsubmit="event.preventDefault(); calculateLED();" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Lunghezza Striscia (metri)</label>
+                                    <div class="relative">
+                                        <input type="number" id="ledLength" value="5" step="0.5" min="0.5" max="50" required
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-tech-500 font-bold">
+                                        <span class="absolute right-4 top-3 text-slate-500 text-sm font-medium">m</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Consumo per Metro (Watt/m)</label>
+                                    <select id="ledPowerPerMeter" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-tech-500 font-medium">
+                                        <option value="4.8">4.8 W/m (Luce d'atmosfera / Segnapasso)</option>
+                                        <option value="9.6">9.6 W/m (Illuminazione standard)</option>
+                                        <option value="14.4" selected>14.4 W/m (Sottopensile / Alta luminosità)</option>
+                                        <option value="18.0">18.0 W/m (Strisce COB / Alta resa)</option>
+                                        <option value="24.0">24.0 W/m (RGBW / Uso professionale)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Tensione Striscia</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center justify-center p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-tech-500">
+                                            <input type="radio" name="voltage" value="12V" class="hidden peer">
+                                            <span class="peer-checked:text-tech-400 peer-checked:font-bold text-slate-300 text-sm">12V DC</span>
+                                        </label>
+                                        <label class="flex items-center justify-center p-3 bg-slate-900 border border-slate-700 rounded-xl cursor-pointer hover:border-tech-500">
+                                            <input type="radio" name="voltage" value="24V" checked class="hidden peer">
+                                            <span class="peer-checked:text-tech-400 peer-checked:font-bold text-slate-300 text-sm">24V DC</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">Margine di Sicurezza</label>
+                                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-center text-emerald-400 font-bold text-sm">
+                                        +20% (Incluso)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calculation Result Box -->
+                            <div class="bg-slate-900/90 rounded-xl p-5 border border-tech-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div>
+                                    <span class="text-xs text-slate-400 uppercase font-semibold">Potenza Minima Consigliata</span>
+                                    <div class="text-3xl font-black text-brand-400" id="resultWatts">86.4 W</div>
+                                    <span class="text-[11px] text-slate-400" id="resultBreakdown">(Consumo netto 72W + 20% margine)</span>
+                                </div>
+                                <button type="button" onclick="openLedArticleWithCalc()" class="w-full sm:w-auto bg-gradient-to-r from-brand-600 to-tech-600 hover:from-brand-500 hover:to-tech-500 text-white font-bold px-6 py-3 rounded-xl text-sm transition shadow-lg shadow-brand-500/20 flex items-center justify-center space-x-2 whitespace-nowrap">
+                                    <span>Vedi Driver Consigliato</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Badges & Methodology -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-2xl font-black tracking-tight">Come Effettuiamo le Recensioni</h2>
+                <p class="text-slate-500 text-sm mt-1">Il nostro metodo di valutazione garantisce trasparenza e parametri oggettivi.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-darkcard p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-start space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                        <i class="fa-solid fa-vial"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-1">Test di Laboratorio</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Misuriamo consumi reali con tester e multimetri calibrati per verificare le specifiche dichiarate dai produttori.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-darkcard p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-start space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-tech-100 dark:bg-tech-900/30 text-tech-600 dark:text-tech-400 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-1">Valutazione della Durabilità</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Testiamo i materiali in condizioni gravose (umidità, sovraccarico termico, sollecitazione meccanica).</p>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-darkcard p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-start space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base mb-1">Indice Qualità/Prezzo</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Confrontiamo i prezzi storici negli e-commerce per indicarti solo quando l'acquisto è realmente conveniente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Article Detail Modal -->
+    <div id="articleModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/80 backdrop-blur-sm p-3 sm:p-6 lg:p-10 flex justify-center items-start">
+        <div class="bg-white dark:bg-darkcard w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-700 my-auto my-8 transform transition-all">
+            
+            <!-- Modal Header / Bar -->
+            <div class="sticky top-0 bg-white/95 dark:bg-darkcard/95 backdrop-blur-md px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between z-10">
+                <span id="modalCategoryBadge" class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-brand-100 text-brand-800 dark:bg-brand-900/40 dark:text-brand-300">
+                    Categoria
+                </span>
+                <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div id="modalBody" class="p-6 sm:p-10 space-y-8 max-h-[80vh] overflow-y-auto">
+                <!-- Dynamically Populated -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-slate-50 dark:bg-slate-900/50 px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+                    <i class="fa-solid fa-shield-halved text-brand-500 mr-1"></i> Prezzi e disponibilità verificati in tempo reale tramite partner ufficiali.
+                </p>
+                <button onclick="closeModal()" class="px-5 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 text-slate-800 dark:text-slate-200 font-semibold rounded-xl text-sm transition">
+                    Chiudi Articolo
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+                
+                <!-- Brand Info -->
+                <div class="space-y-4 md:col-span-1">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <span class="text-xl font-black text-white tracking-tight">TechHomeLab</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Il portale italiano indipendente specializzato in test di laboratorio, recensioni comparative e guide per Fai-da-te, Smart Home e tecnologie domestiche.
+                    </p>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h4 class="text-sm font-bold uppercase text-white tracking-wider mb-4">Categorie</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="#" onclick="filterArticles('garden'); event.preventDefault();" class="hover:text-brand-400 transition">Fai-da-te & Elettroutensili</a></li>
+                        <li><a href="#" onclick="filterArticles('smarthome'); event.preventDefault();" class="hover:text-brand-400 transition">Smart Home & LED Driver</a></li>
+                        <li><a href="#" onclick="filterArticles('pettech'); event.preventDefault();" class="hover:text-brand-400 transition">Pet Tech & Domotica Casa</a></li>
+                        <li><a href="#calculator-section" class="hover:text-brand-400 transition">Calcolatore Potenza LED</a></li>
+                    </ul>
+                </div>
+
+                <!-- Transparency & Affiliate Disclaimer -->
+                <div class="md:col-span-2 space-y-3">
+                    <h4 class="text-sm font-bold uppercase text-white tracking-wider">Trasparenza & Affiliazioni</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        TechHomeLab partecipa al Programma Affiliazione Amazon EU e a diversi network di affiliazione specializzati (Awin, TradeTracker). Questo sito genera commissioni pubblicitarie dagli acquisti idonei effettuati tramite i link di raccomandazione. Questo non comporta alcun costo aggiuntivo per l'utente e ci permette di mantenere il laboratorio indipendente.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <p>&copy; 2026 TechHomeLab. Tutti i diritti riservati. Progetto Editoriale & Monetizzazione.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-300 transition">Cookie Policy</a>
+                    <a href="#" class="hover:text-slate-300 transition">Termini di Servizio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Data Store for Articles & Reviews
+        const articlesData = [
+            {
+                id: 'driver-led',
+                category: 'smarthome',
+                categoryName: 'Smart Home & Hardware',
+                title: 'Come Scegliere il Miglior Alimentatore Driver per Strisce LED: Guida 2026',
+                excerpt: 'Analisi dei migliori driver a tensione costante 12V/24V. Calcolo del margine di sicurezza del 20%, test di stabilità e protezione IP67 per installazioni perfette.',
+                rating: 5.0,
+                reviewsCount: 42,
+                date: '28 Ottobre 2026',
+                readTime: '8 min lettura',
+                icon: 'fa-bolt',
+                picks: [
+                    { label: 'Migliore Scelta Assoluta', name: 'Mean Well LPV-60-24 (24V 60W IP67)', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' },
+                    { label: 'Professionale Dimmerabile', name: 'Mean Well HLG-320H-C2100AB', store: 'Partner Store', linkName: 'Vedi Offerta Store' }
+                ],
+                fullContent: `
+                    <div class="space-y-6 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+                        <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 border-l-4 border-emerald-500 rounded-r-xl">
+                            <h4 class="font-bold text-emerald-900 dark:text-emerald-300 text-base mb-1">In sintesi dal Laboratorio</h4>
+                            <p class="text-xs text-emerald-800 dark:text-emerald-400">
+                                Il driver (alimentatore) determina la durata reale di una striscia LED. La regola fondamentale è sovradimensionare la potenza minima del <strong>20%</strong> per evitare surriscaldamenti continui.
+                            </p>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">1. Perché l'alimentatore è il componente critico</h3>
+                        <p>
+                            Mentre i chip LED possono durare fino a 50.000 ore, un driver di scarsa qualità si guasta spesso prima delle 5.000 ore a causa dell'invecchiamento dei condensatori elettrolitici sottoposti a calore eccessivo.
+                        </p>
+
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">2. Formula per il Calcolo della Potenza</h3>
+                        <div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-xl font-mono text-xs sm:text-sm text-center border border-slate-200 dark:border-slate-700">
+                            Potenza Driver (W) = [ Lunghezza (m) × Consumo (W/m) ] × 1.20
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">3. Tabella Comparativa dei Migliori Modelli Testati</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700">
+                                        <th class="p-3">Modello</th>
+                                        <th class="p-3">Tensione</th>
+                                        <th class="p-3">Protezione</th>
+                                        <th class="p-3">Efficienza</th>
+                                        <th class="p-3 text-right">Azione</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                                    <tr>
+                                        <td class="p-3 font-semibold">Mean Well LPV-60-24</td>
+                                        <td class="p-3">24V DC</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 rounded text-[10px]">IP67 Waterproof</span></td>
+                                        <td class="p-3">86%</td>
+                                        <td class="p-3 text-right">
+                                            <button onclick="simulateAffiliateClick('Amazon', 'Mean Well LPV-60-24')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded text-[11px] transition">Amazon</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Mean Well HLG-320H</td>
+                                        <td class="p-3">24V / Dimmer</td>
+                                        <td class="p-3"><span class="px-2 py-0.5 bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-300 rounded text-[10px]">IP65 Alluminio</span></td>
+                                        <td class="p-3">94%</td>
+                                        <td class="p-3 text-right">
+                                            <button onclick="simulateAffiliateClick('Awin Store', 'Mean Well HLG-320H')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded text-[11px] transition">Store Partner</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Domande Frequenti (FAQ)</h3>
+                        <div class="space-y-3">
+                            <details class="bg-slate-100 dark:bg-slate-800/60 p-3.5 rounded-xl cursor-pointer">
+                                <summary class="font-semibold text-xs sm:text-sm">Meglio striscia LED a 12V o 24V?</summary>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Le strisce a 24V soffrono meno della caduta di tensione su tratte superiori ai 5 metri e garantiscono una luminosità più omogenea.</p>
+                            </details>
+                            <details class="bg-slate-100 dark:bg-slate-800/60 p-3.5 rounded-xl cursor-pointer">
+                                <summary class="font-semibold text-xs sm:text-sm">Cosa succede se sottodimensiono l'alimentatore?</summary>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">L'alimentatore andrà in protezione termica spegnendosi a intermittenza (effetto lampeggio) e rischierà di bruciarsi definitivamente.</p>
+                            </details>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'tasselli-ancoraggi',
+                category: 'garden',
+                categoryName: 'Fai-da-te & Garden',
+                title: 'I 5 Migliori Tasselli e Ancoraggi Meccanici per Calcestruzzo e Mattoni',
+                excerpt: 'Guida alla scelta del fissaggio per carichi pesanti. Test di tenuta a trazione su cartongesso, mattone forato e calcestruzzo armato.',
+                rating: 4.9,
+                reviewsCount: 28,
+                date: '25 Ottobre 2026',
+                readTime: '6 min lettura',
+                icon: 'fa-screwdriver-wrench',
+                picks: [
+                    { label: 'Migliore per Forati', name: 'Fischer Duopower Kit Universale', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' },
+                    { label: 'Ancorante Pesante', name: 'Fischer FH II Calcestruzzo', store: 'Amazon', linkName: 'Vedi Offerta Amazon' }
+                ],
+                fullContent: `
+                    <div class="space-y-6 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+                        <p>Fissare pensili, staffe TV o strutture da giardino richiede la scelta del tassello corretto per evitare cedimenti strutturali.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Classifica dei Migliori Fissaggi Testati</h3>
+                        <ul class="space-y-3">
+                            <li class="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl border-l-4 border-brand-500">
+                                <strong>1. Fischer Duopower:</strong> Il tassello bi-materiale più versatile. Si adatta espandendosi o annodandosi a seconda del supporto.
+                            </li>
+                            <li class="p-4 bg-slate-100 dark:bg-slate-800 rounded-xl border-l-4 border-tech-500">
+                                <strong>2. Ancoranti Chimici con Calza:</strong> L'unica vera soluzione sicura per mattoni molto forati e vecchie murature inconsistenti.
+                            </li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'fontanella-pet-smart',
+                category: 'pettech',
+                categoryName: 'Casa & Pet Tech',
+                title: 'Fontanelle Smart e Distributori Automatici per Gatti e Cani: Confronto 2026',
+                excerpt: 'Abbiamo testato la silenziosità del motore, la filtrazione a tre stadi con carboni attivi e la connettività app Wi-Fi di 4 modelli leader.',
+                rating: 4.8,
+                reviewsCount: 35,
+                date: '22 Ottobre 2026',
+                readTime: '7 min lettura',
+                icon: 'fa-paw',
+                picks: [
+                    { label: 'Top di Gamma Silenzioso', name: 'Petkit Eversweet Solo SE (Wireless Pump)', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' },
+                    { label: 'Miglior Distributore Cibo', name: 'Xiaomi Smart Pet Feeder', store: 'Partner Store', linkName: 'Vedi Offerta Store' }
+                ],
+                fullContent: `
+                    <div class="space-y-6 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
+                        <p>La salute dei nostri animali domestici passa dall'idratazione costante. Una fontanella ad acqua corrente stimola l'animale a bere di più.</p>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Caratteristiche chiave misurate in laboratorio:</h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Rumorosità dB:</strong> Tutti i modelli scelti emettono meno di 25 dB a 1 metro di distanza.</li>
+                            <li><strong>Pompa Wireless:</strong> Previene la formazione di incrostazioni e facilita la pulizia in lavastoviglie.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'robot-aspirapolvere-pet',
+                category: 'pettech',
+                categoryName: 'Casa & Pet Tech',
+                title: 'Robot Aspirapolvere anti-Groviglio per Peli di Animali: I Migliori',
+                excerpt: 'Spazzole gommate di nuova generazione, mappatura LiDAR e potenza di aspirazione > 6000 Pa a confronto sul tappeto e parquet.',
+                rating: 4.9,
+                reviewsCount: 51,
+                date: '19 Ottobre 2026',
+                readTime: '10 min lettura',
+                icon: 'fa-robot',
+                picks: [
+                    { label: 'Scelta Assoluta', name: 'Dreame L10s Ultra / Roborock Qrevo', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' }
+                ],
+                fullContent: `<p class="text-sm">Guida completa con test pratici sulla rimozione dei peli di animali da tappeti e superfici rigide.</p>`
+            },
+            {
+                id: 'motoseghe-batteria-garden',
+                category: 'garden',
+                categoryName: 'Fai-da-te & Garden',
+                title: 'Motoseghe e Potatori a Batteria da Potatura: Test di Taglio e Autonomia',
+                excerpt: 'Mettiamo alla prova la velocità di taglio e l'ergonomia dei mini potatori 18V su rami fino a 12 cm di diametro.',
+                rating: 4.7,
+                reviewsCount: 19,
+                date: '15 Ottobre 2026',
+                readTime: '5 min lettura',
+                icon: 'fa-tree',
+                picks: [
+                    { label: 'Migliore Potatore Compatto', name: 'Stihl GTA 26 / Bosch EasyChain', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' }
+                ],
+                fullContent: `<p class="text-sm">Analisi dettagliata sulla durata delle batterie agli ioni di litio e manutenzione della catena.</p>`
+            },
+            {
+                id: 'multimetri-digitali-lab',
+                category: 'smarthome',
+                categoryName: 'Smart Home & Hardware',
+                title: 'Multimetri Digitali True-RMS per Laboratorio e Fai-da-Te Elettrico',
+                excerpt: 'Precisione nella misurazione di tensione AC/DC, continuità con cicalino veloce e protezione dalle sovratensioni CAT III / CAT IV.',
+                rating: 4.8,
+                reviewsCount: 31,
+                date: '10 Ottobre 2026',
+                readTime: '7 min lettura',
+                icon: 'fa-gauge-high',
+                picks: [
+                    { label: 'Scelta Professionale', name: 'Fluke 117 / Kaiweets HT118A', store: 'Amazon', linkName: 'Verifica Prezzo su Amazon' }
+                ],
+                fullContent: `<p class="text-sm">In questa guida analizziamo la sicurezza degli strumenti di misura e il significato del campionamento True-RMS.</p>`
+            }
+        ];
+
+        // Global State variables
+        let currentCategory = 'all';
+
+        // Render Articles into Grid
+        function renderArticles(articlesToRender) {
+            const grid = document.getElementById('articlesGrid');
+            const noResults = document.getElementById('noResults');
+            const countLabel = document.getElementById('resultsCount');
+
+            grid.innerHTML = '';
+            countLabel.textContent = `${articlesToRender.length} Articoli`;
+
+            if (articlesToRender.length === 0) {
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            articlesToRender.forEach(article => {
+                const card = document.createElement('article');
+                card.className = 'bg-white dark:bg-darkcard rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group';
+                
+                // Star rating renderer
+                const fullStars = Math.floor(article.rating);
+                const starsHtml = Array(fullStars).fill('<i class="fa-solid fa-star text-amber-400"></i>').join('');
+
+                card.innerHTML = `
+                    <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-3">
+                                <span class="font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid ${article.icon} mr-1"></i> ${article.categoryName}
+                                </span>
+                                <span class="text-slate-400 font-medium">${article.readTime}</span>
+                            </div>
+
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug mb-2 cursor-pointer" onclick="openArticleModal('${article.id}')">
+                                ${article.title}
+                            </h3>
+
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                                ${article.excerpt}
+                            </p>
+                        </div>
+
+                        <!-- Rating and Picks -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center space-x-1">
+                                    ${starsHtml}
+                                    <span class="font-bold ml-1 text-slate-700 dark:text-slate-200">${article.rating.toFixed(1)}</span>
+                                </div>
+                                <span class="text-slate-400">(${article.reviewsCount} test)</span>
+                            </div>
+
+                            <!-- Conversion Picks Box -->
+                            ${article.picks.map(pick => `
+                                <div class="bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800 flex items-center justify-between">
+                                    <div class="pr-2 overflow-hidden">
+                                        <span class="block text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tight">${pick.label}</span>
+                                        <span class="block text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">${pick.name}</span>
+                                    </div>
+                                    <button onclick="simulateAffiliateClick('${pick.store}', '${pick.name}')" 
+                                        class="${pick.store === 'Amazon' ? 'badge-amazon' : 'badge-partner'} text-white text-[11px] font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-sm hover:opacity-95 transition flex items-center space-x-1">
+                                        <span>Offerta</span>
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="px-6 py-3 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">${article.date}</span>
+                        <button onclick="openArticleModal('${article.id}')" class="font-bold text-brand-600 dark:text-brand-400 hover:underline flex items-center space-x-1">
+                            <span>Leggi Guida Completa</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Category Filtering
+        function filterArticles(category) {
+            currentCategory = category;
+
+            // Update UI buttons state
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-600/20');
+                btn.classList.add('text-slate-600', 'dark:text-slate-300');
+            });
+
+            const activeBtn = document.getElementById(`btn-${category}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-md', 'shadow-brand-600/20');
+                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300');
+            }
+
+            const filtered = category === 'all' 
+                ? articlesData 
+                : articlesData.filter(a => a.category === category);
+
+            renderArticles(filtered);
+        }
+
+        // Search Handlers
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            filterSearchQuery(query);
+        }
+
+        function handleSearchMobile() {
+            const query = document.getElementById('searchInputMobile').value.toLowerCase().trim();
+            filterSearchQuery(query);
+        }
+
+        function filterSearchQuery(query) {
+            const filtered = articlesData.filter(a => 
+                a.title.toLowerCase().includes(query) || 
+                a.excerpt.toLowerCase().includes(query) ||
+                a.categoryName.toLowerCase().includes(query)
+            );
+            renderArticles(filtered);
+        }
+
+        // LED Power Calculation Logic
+        function calculateLED() {
+            const length = parseFloat(document.getElementById('ledLength').value) || 0;
+            const wattsPerMeter = parseFloat(document.getElementById('ledPowerPerMeter').value) || 0;
+            
+            const netWatts = length * wattsPerMeter;
+            const totalRecommendedWatts = netWatts * 1.20; // 20% Safety Margin
+
+            document.getElementById('resultWatts').textContent = `${totalRecommendedWatts.toFixed(1)} W`;
+            document.getElementById('resultBreakdown').textContent = `(Consumo netto ${netWatts.toFixed(1)}W + 20% margine di stabilità)`;
+        }
+
+        function openLedArticleWithCalc() {
+            calculateLED();
+            openArticleModal('driver-led');
+        }
+
+        // Modal Handlers
+        function openArticleModal(articleId) {
+            const article = articlesData.find(a => a.id === articleId);
+            if (!article) return;
+
+            document.getElementById('modalCategoryBadge').textContent = article.categoryName;
+            
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3 text-xs text-slate-400">
+                        <span><i class="fa-solid fa-calendar mr-1"></i> ${article.date}</span>
+                        <span>•</span>
+                        <span><i class="fa-solid fa-clock mr-1"></i> ${article.readTime}</span>
+                        <span>•</span>
+                        <span class="text-amber-400 font-bold"><i class="fa-solid fa-star"></i> ${article.rating.toFixed(1)} Valutazione</span>
+                    </div>
+
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                        ${article.title}
+                    </h2>
+
+                    <p class="text-base font-medium text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 pb-6">
+                        ${article.excerpt}
+                    </p>
+
+                    <!-- Article Full Body Content -->
+                    <div class="pt-2">
+                        ${article.fullContent}
+                    </div>
+
+                    <!-- Recommended Buy Box Inside Article -->
+                    <div class="mt-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-2xl space-y-4 shadow-xl">
+                        <div class="flex items-center space-x-2 text-brand-400 text-xs font-bold uppercase tracking-wider">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <span>Verifica Disponibilità e Prezzi</span>
+                        </div>
+                        <h4 class="text-lg font-bold">Acquista i Prodotti consigliati da TechHomeLab</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            ${article.picks.map(pick => `
+                                <button onclick="simulateAffiliateClick('${pick.store}', '${pick.name}')" 
+                                    class="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs flex items-center justify-between transition shadow-md">
+                                    <span class="truncate">${pick.name}</span>
+                                    <span class="bg-black/20 px-2 py-1 rounded text-[10px] ml-2 shrink-0">${pick.store}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('articleModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Affiliate Link Simulation with Toast
+        function simulateAffiliateClick(storeName, productName) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = `Reindirizzamento a ${storeName} per "${productName}"...`;
+            
+            // Show toast
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                // Hide toast
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Dark / Light Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-400';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initialization on Load
+        window.onload = function() {
+            // Restore Theme Preference
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                const themeIcon = document.getElementById('themeIcon');
+                if (themeIcon) themeIcon.className = 'fa-solid fa-sun text-amber-400';
+            }
+
+            // Initial Calculations & Article Render
+            calculateLED();
+            renderArticles(articlesData);
+        };
+    </script>
+</body>
+</html>
