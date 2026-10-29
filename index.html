@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechHomeLab - Guide, Recensioni e Fai-da-te Tecnico</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 900: '#14532d' },
+            accent: { 500: '#06b6d4', 600: '#0891b2' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .light .glass-panel {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300 light:bg-slate-50 light:text-slate-900">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0">
+    <i class="fa-solid fa-cart-shopping text-xl"></i>
+    <span id="toast-msg">Reindirizzamento all'offerta partner...</span>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 glass-panel border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">
+            TechHomeLab
+          </span>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-300">
+          <a href="#fai-da-te" class="hover:text-emerald-400 transition-colors">Fai-da-te & Garden</a>
+          <a href="#smart-home" class="hover:text-emerald-400 transition-colors">Smart Home & Hardware</a>
+          <a href="#pet-care" class="hover:text-emerald-400 transition-colors">Casa & Pet Tech</a>
+          <a href="#calcolatore" class="hover:text-emerald-400 transition-colors">Calcolatore LED</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <button id="theme-toggle" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Cambia Tema">
+            <i class="fa-solid fa-sun text-amber-400 hidden dark:inline"></i>
+            <i class="fa-solid fa-moon text-indigo-400 dark:hidden"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative py-16 lg:py-24 overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-slate-900 to-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-4 border border-emerald-500/20">
+          <i class="fa-solid fa-shield-halved"></i> Test Tecnici & Guide Indipendenti 2026
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          La Soluzione Giusta per la Tua Casa, <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">Senza Errori di Scelta</span>
+        </h1>
+        <p class="text-lg text-slate-400 mb-8 leading-relaxed">
+          Recensioni approfondite, guide al montaggio e comparazioni trasparenti su utensili da lavoro, domotica avanzata, illuminazione LED e prodotti smart per animali domestici.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    
+    <!-- Fai-da-te e Garden -->
+    <section id="fai-da-te" class="space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-hammer text-emerald-400"></i> Fai-da-te & Garden
+          </h2>
+          <p class="text-sm text-slate-400">Attrezzatura per il bricolage, ancoraggi strutturali e manutenzione del giardino</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/50 transition-all duration-300 group">
+          <div>
+            <div class="aspect-video bg-slate-800 rounded-xl mb-4 overflow-hidden relative flex items-center justify-center text-slate-600">
+              <i class="fa-solid fa-screwdriver-wrench text-5xl group-hover:scale-110 transition-transform duration-300"></i>
+              <span class="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-bold px-2 py-1 rounded">Consigliato</span>
+            </div>
+            <h3 class="font-bold text-lg text-white mb-2 group-hover:text-emerald-400 transition-colors">
+              Fischer Duopower Kit Tasselli Multimateriale
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">
+              I migliori tasselli per muratura piena, forata e cartongesso. Tuta tenuta e adattamento automatico al supporto.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <div>
+              <span class="text-xs text-slate-500 block">Prezzo indicativo</span>
+              <span class="text-xl font-bold text-emerald-400">€18,90</span>
+            </div>
+            <button onclick="redirectAffiliate('Fischer Duopower')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fa-brands fa-amazon"></i> Offerta
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/50 transition-all duration-300 group">
+          <div>
+            <div class="aspect-video bg-slate-800 rounded-xl mb-4 overflow-hidden relative flex items-center justify-center text-slate-600">
+              <i class="fa-solid fa-tree text-5xl group-hover:scale-110 transition-transform duration-300"></i>
+              <span class="absolute top-3 left-3 bg-cyan-600 text-white text-xs font-bold px-2 py-1 rounded">Best Seller</span>
+            </div>
+            <h3 class="font-bold text-lg text-white mb-2 group-hover:text-emerald-400 transition-colors">
+              Motosega da Potatura a Batteria 20V
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">
+              Compatta, leggera e silenziosa per la pulizia di rami, siepi e piccoli alberi da frutto in giardino.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <div>
+              <span class="text-xs text-slate-500 block">Prezzo indicativo</span>
+              <span class="text-xl font-bold text-emerald-400">€89,00</span>
+            </div>
+            <button onclick="redirectAffiliate('Motosega a batteria')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fa-brands fa-amazon"></i> Offerta
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Smart Home & Hardware -->
+    <section id="smart-home" class="space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-cyan-400"></i> Smart Home & Hardware
+          </h2>
+          <p class="text-sm text-slate-400">Alimentatori LED, componenti domotici e strumentazione di test</p>
+        </div>
+      </div>
+
+      <div class="glass-panel rounded-3xl p-6 lg:p-8 border border-emerald-500/30 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+          <div class="lg:col-span-2 space-y-4">
+            <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-3 py-1 rounded-full uppercase">Guida In Evidenza</span>
+            <h3 class="text-2xl font-bold text-white">Come scegliere il miglior driver e alimentatore per strisce LED (24V e 12V)</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Evita sfarfallii e rotture precoci. Scopri come calcolare la potenza necessaria in Watt, la regola del margine del 20% e perché la marca Mean Well resta lo standard di affidabilità.
+            </p>
+            <button onclick="openModal()" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors pt-2">
+              Leggi la Guida Completa e i Modelli Consigliati <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+
+          <div id="calcolatore" class="bg-slate-950/80 rounded-2xl p-5 border border-slate-800 space-y-4">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-calculator text-emerald-400"></i> Calcolatore Driver LED
+            </h4>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="text-slate-400 block mb-1">Lunghezza Striscia (metri):</label>
+                <input type="number" id="led-length" value="5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+              <div>
+                <label class="text-slate-400 block mb-1">Consumo per Metro (Watt/m):</label>
+                <input type="number" id="led-watt" value="14.4" step="0.1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              </div>
+              <button onclick="calculateLED()" class="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 text-white font-bold py-2 rounded-lg transition-all shadow-md">
+                Calcola Alimentatore Ideale
+              </button>
+              <div id="led-result" class="p-3 bg-slate-900/90 rounded-lg border border-emerald-500/20 text-slate-300 hidden">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Casa e Pet Tech -->
+    <section id="pet-care" class="space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-paw text-amber-400"></i> Casa & Pet Tech
+          </h2>
+          <p class="text-sm text-slate-400">Elettrodomestici smart, robot lavapavimenti e accessori tecnologici per animali</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-500/50 transition-all duration-300 group">
+          <div>
+            <div class="aspect-video bg-slate-800 rounded-xl mb-4 overflow-hidden relative flex items-center justify-center text-slate-600">
+              <i class="fa-solid fa-faucet-drip text-5xl group-hover:scale-110 transition-transform duration-300"></i>
+            </div>
+            <h3 class="font-bold text-lg text-white mb-2 group-hover:text-emerald-400 transition-colors">
+              Fontanella Smart per Gatti in Acciaio Inox
+            </h3>
+            <p class="text-slate-400 text-sm mb-4">
+              Filtrazione a quadrupla azione, funzionamento ultrasilezioso e ricircolo continuo per stimolare l'idratazione del gatto.
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-800/60 flex items-center justify-between">
+            <div>
+              <span class="text-xs text-slate-500 block">Prezzo indicativo</span>
+              <span class="text-xl font-bold text-emerald-400">€34,99</span>
+            </div>
+            <button onclick="redirectAffiliate('Fontanella Smart')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fa-brands fa-amazon"></i> Offerta
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div id="guide-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="glass-panel bg-slate-900 border border-slate-800 max-w-3xl w-full max-h-[85vh] rounded-3xl overflow-y-auto p-6 lg:p-8 space-y-6 text-slate-300">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <h3 class="text-xl font-bold text-white">Guida Tecnica: Alimentatori Driver per LED</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white p-2">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-sm leading-relaxed">
+        <p>Scegliere un alimentatore inadeguato per le proprie strisce LED è la prima causa di guasti prematuri e sfarfallii fastidiosi. In questa guida vediamo come effettuare una scelta tecnica perfetta.</p>
+        <h4 class="font-bold text-white text-base">1. Calcolo del Margine di Sicurezza (+20%)</h4>
+        <p>Non far mai lavorare un driver al 100% della sua capacità nominale. Moltiplica il consumo totale dei tuoi LED per 1,20.</p>
+        <h4 class="font-bold text-white text-base">2. Tensione Costante: 12V vs 24V</h4>
+        <p>Per installazioni superiori ai 5 metri è sempre raccomandato utilizzare strisce e driver a <strong>24V DC</strong>.</p>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800 flex justify-end">
+        <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-colors">
+          Chiudi Guida
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-slate-800 bg-slate-950 py-8 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="mb-2">© 2026 TechHomeLab. Tutti i diritti riservati.</p>
+      <p>Trasparenza affiliazioni: In qualità di Affiliato Amazon e Partner, questo sito riceve un guadagno dagli acquisti idonei.</p>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    themeToggleBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light');
+    });
+
+    function calculateLED() {
+      const length = parseFloat(document.getElementById('led-length').value) || 0;
+      const wattPerM = parseFloat(document.getElementById('led-watt').value) || 0;
+      if (length <= 0 || wattPerM <= 0) return;
+      const rawWatt = length * wattPerM;
+      const recommendedWatt = Math.ceil(rawWatt * 1.20);
+      const resultBox = document.getElementById('led-result');
+      resultBox.classList.remove('hidden');
+      resultBox.innerHTML = `
+        <div class="font-bold text-white mb-1">Risultato Calcolo:</div>
+        <div>Consumo effettivo: <span class="text-emerald-400 font-semibold">${rawWatt.toFixed(1)} W</span></div>
+        <div>Potenza minima consigliata (+20%): <strong class="text-emerald-400 font-bold">${recommendedWatt} W</strong></div>
+      `;
+    }
+
+    function openModal() { document.getElementById('guide-modal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('guide-modal').classList.add('hidden'); }
+
+    function redirectAffiliate(productName) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.innerText = `Reindirizzamento all'offerta per "${productName}"...`;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 2500);
+    }
+  </script>
+</body>
+  </html>
+  
